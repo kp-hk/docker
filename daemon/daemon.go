@@ -308,6 +308,10 @@ func (daemon *Daemon) restore() error {
 			continue
 		}
 
+		// The LogConfig.Type is empty if the container was created before docker 1.12 with default log driver.
+		// We should rewrite it to use the daemon defaults.
+		// Fixes https://github.com/docker/docker/issues/22536
+
 		// get list of containers we need to restart
 		if daemon.configStore.AutoRestart && c.ShouldRestart() {
 			restartContainers[c] = make(chan struct{})
